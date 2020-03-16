@@ -35,6 +35,14 @@ class ProductGridList extends Component {
       error: null,
       currentProduct: null
     };
+    this.getAllProductsWithAsset()
+      .then(products => {
+        console.log(products);
+        this.setState({
+          productsData: products,
+          isLoading: false
+        });
+      });
   }
 
 setError = async () => {
