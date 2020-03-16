@@ -15,11 +15,10 @@
     "react-router-dom": "^4.2.2"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "node dist/server.js",
     "build:server": "webpack",
     "build:client": "webpack --config webpack.client.config.js",
     "build": "npm run build:server & npm run build:client",
-    "serve": "node dist/server.js",
     "test": "jest --config ./jest.config.json"
   },
   "devDependencies": {
