@@ -20,7 +20,7 @@ Launches the test runner.<br />
 
 ### `npm run build`
 
-Builds the app for production to the `dist`  and 'client' folder.<br />
+Builds the app in the `dist`  and 'client' folder.<br />
 
 
 
