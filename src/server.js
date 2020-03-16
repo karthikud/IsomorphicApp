@@ -21,4 +21,4 @@ app.get("*", async (req, res) => {
   });
 });
 
-app.listen(3000, () => console.log("App listening at 3000"));
+app.listen(8080, () => console.log("App listening at 3000"));
