@@ -120,15 +120,15 @@ setError = async () => {
   };
 
   componentDidMount() {
-    // this.setState({ isLoading: true });
-    // this.getAllProductsWithAsset()
-    //   .then(products => {
-    //     console.log(products);
-    //     this.setState({
-    //       productsData: products,
-    //       isLoading: false
-    //     });
-    //   });
+this.setState({ isLoading: true });
+this.getAllProductsWithAsset().then(products => {
+  console.log(products);
+  this.setState({
+    productsData: products,
+    isLoading: false
+  });
+});
+
   }
 
   render() {
