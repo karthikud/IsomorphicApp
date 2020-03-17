@@ -1,6 +1,6 @@
 
 import React, { Component } from "react";
-import { withStyles,createMuiTheme } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import ProductDialog from "./productDialog";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -120,15 +120,15 @@ setError = async () => {
   };
 
   componentDidMount() {
-    this.setState({ isLoading: true });
-    this.getAllProductsWithAsset()
-      .then(products => {
-        console.log(products);
-        this.setState({
-          productsData: products,
-          isLoading: false
-        });
-      });
+    // this.setState({ isLoading: true });
+    // this.getAllProductsWithAsset()
+    //   .then(products => {
+    //     console.log(products);
+    //     this.setState({
+    //       productsData: products,
+    //       isLoading: false
+    //     });
+    //   });
   }
 
   render() {
