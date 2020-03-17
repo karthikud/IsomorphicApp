@@ -1,4 +1,3 @@
-
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import ProductDialog from "./productDialog";
@@ -12,7 +11,6 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 
 import axios from "axios";
-
 
 const styles = theme => ({
   root: {
@@ -33,23 +31,23 @@ class ProductGridList extends Component {
       openDialog: false,
       isLoading: false,
       error: null,
+      errorMessage: null,
       currentProduct: null
     };
-    this.getAllProductsWithAsset()
-      .then(products => {
-        console.log(products);
-        this.setState({
-          productsData: products,
-          isLoading: false
-        });
+    this.getAllProductsWithAsset().then(products => {
+      console.log(products);
+      this.setState({
+        productsData: products,
+        isLoading: false
       });
+    });
   }
 
-setError = async () => {
-  this.setState({
-    error: true
-  });
-};
+  setError = e => {
+    this.setState({
+      error: e
+    });
+  };
 
   getAllProducts = async () => {
     try {
@@ -62,49 +60,49 @@ setError = async () => {
           return productResponse.data.data;
         })
       );
-      return products;   } catch (e) {
-        await this.setError();
-   }
-};
+      return products;
+    } catch (e) {
+      return this.setError(e);
+    }
+  };
 
   getProductAssetData = async assetId => {
     try {
       let assetResponse = await axios.get(ASSETS_ENDPOINT + "/" + assetId);
-      return assetResponse.data.data.uri
+      return assetResponse.data.data.uri;
     } catch (e) {
-      await this.setError();
-   }
-
+      return this.setError(e);
+    }
   };
 
   getAllProductsWithAsset = async () => {
-
     try {
       let productsResponse = await this.getAllProducts();
 
-        return Promise.all(productsResponse.map(
-          async product => {
-          let productInstance = {}
-            product.elements.map(
-              async element => {
-
-              productInstance[element.name] = element.value
-              productInstance["image_uri"]  = (element.name === "main_image") ? element.value.id : 'NULL';
-            });
-            productInstance["image_uri"]  = await this.getProductAssetData(productInstance["image_uri"] )
-            const currencyFormat = new Intl.NumberFormat("en", {
-              style: "currency",
-              currency: productInstance["price"].unitAbbreviation
-            });
-            productInstance["price"]  = currencyFormat.format(productInstance["price"].value);
-
-            return productInstance;
-
-        }));
+      return Promise.all(
+        productsResponse.map(async product => {
+          let productInstance = {};
+          product.elements.map(async element => {
+            productInstance[element.name] = element.value;
+            productInstance["image_uri"] =
+              element.name === "main_image" ? element.value.id : "NULL";
+          });
+          productInstance["image_uri"] = await this.getProductAssetData(
+            productInstance["image_uri"]
+          );
+          const currencyFormat = new Intl.NumberFormat("en", {
+            style: "currency",
+            currency: productInstance["price"].unitAbbreviation
+          });
+          productInstance["price"] = currencyFormat.format(
+            productInstance["price"].value
+          );
+          return productInstance;
+        })
+      );
     } catch (e) {
-      await this.setError();
-   }
-
+      return this.setError(e);
+    }
   };
 
   closeModalHandler = () => {
@@ -120,22 +118,21 @@ setError = async () => {
   };
 
   componentDidMount() {
-this.setState({ isLoading: true });
-this.getAllProductsWithAsset().then(products => {
-  console.log(products);
-  this.setState({
-    productsData: products,
-    isLoading: false
-  });
-});
-
+    this.setState({ isLoading: true });
+    this.getAllProductsWithAsset().then(products => {
+      console.log(products);
+      this.setState({
+        productsData: products,
+        isLoading: false
+      });
+    });
   }
 
   render() {
     const { productsData, isLoading, error } = this.state;
 
     if (error) {
-      return <p>{error}</p>;
+      return <p>{error.message}</p>;
     }
 
     if (isLoading) {
