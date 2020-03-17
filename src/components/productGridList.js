@@ -31,7 +31,6 @@ class ProductGridList extends Component {
       openDialog: false,
       isLoading: false,
       error: null,
-      errorMessage: null,
       currentProduct: null
     };
     this.getAllProductsWithAsset().then(products => {
