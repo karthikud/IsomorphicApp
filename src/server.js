@@ -21,8 +21,7 @@ const theme = createMuiTheme({
     }
   }
 });
-const PRODUCTS_ENDPOINT =
-  "https://dev-api.danielwellington.com/frontend/products";
+const PRODUCTS_ENDPOINT = "https://dev-api.danielwellington.com/frontend/products";
 const ASSETS_ENDPOINT = "https://dev-api.danielwellington.com/frontend/assets";
 
 const getAllProducts = async () => {
@@ -38,7 +37,7 @@ const getAllProducts = async () => {
     );
     return products;
   } catch (e) {
-    return this.setError(e);
+    throw new Error(e);
   }
 };
 
@@ -47,7 +46,7 @@ const getProductAssetData = async assetId => {
     let assetResponse = await axios.get(ASSETS_ENDPOINT + "/" + assetId);
     return assetResponse.data.data.uri;
   } catch (e) {
-    return this.setError(e);
+    throw new Error(e);
   }
 };
 
@@ -77,7 +76,7 @@ const getAllProductsWithAsset = async () => {
       })
     );
   } catch (e) {
-    return this.setError(e);
+    throw new Error(e);
   }
 };
 function handleRender(req, res, next) {
