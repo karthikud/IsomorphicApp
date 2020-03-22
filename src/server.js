@@ -109,7 +109,7 @@ function renderFullPage(html, css) {
      <!DOCTYPE html>
      <html>
        <head>
-         <title>My page</title>
+         <title>IsomorphicApp_DW</title>
          <style id="jss-server-side">${css}</style>
        </head>
        <body>
