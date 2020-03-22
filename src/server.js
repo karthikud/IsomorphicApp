@@ -3,12 +3,24 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import App from "./components/App";
 import axios from "axios";
-
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ServerStyleSheets, ThemeProvider } from "@material-ui/core/styles";
-// Create a theme instance.
-// We are going to fill these out in the sections to follow.
-
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      light: "#000",
+      main: "#000",
+      dark: "#002884",
+      contrastText: "#fff"
+    },
+    secondary: {
+      light: "#ff7961",
+      main: "#f44336",
+      dark: "#ba000d",
+      contrastText: "#000"
+    }
+  }
+});
 const PRODUCTS_ENDPOINT =
   "https://dev-api.danielwellington.com/frontend/products";
 const ASSETS_ENDPOINT = "https://dev-api.danielwellington.com/frontend/assets";
@@ -73,37 +85,24 @@ function handleRender(req, res, next) {
 
   const sheets = new ServerStyleSheets();
   let html;
-  getAllProductsWithAsset().then(products => {
-    console.log(products);
-    const theme = createMuiTheme({
-      palette: {
-        primary: {
-          light: "#000",
-          main: "#000",
-          dark: "#002884",
-          contrastText: "#fff"
-        },
-        secondary: {
-          light: "#ff7961",
-          main: "#f44336",
-          dark: "#ba000d",
-          contrastText: "#000"
-        }
-      }
-    });
-    html = ReactDOMServer.renderToString(
-      sheets.collect(
-        <ThemeProvider theme={theme}>
-          <App productsData={products} />
-        </ThemeProvider>
-      )
-    );
-    // Grab the CSS from the sheets.
-    const css = sheets.toString();
+  getAllProductsWithAsset()
+    .then(products => {
+      html = ReactDOMServer.renderToString(
+        sheets.collect(
+          <ThemeProvider theme={theme}>
+            <App productsData={products} />
+          </ThemeProvider>
+        )
+      );
+      // Grab the CSS from the sheets.
+      const css = sheets.toString();
 
-    // Send the rendered page back to the client.
-    res.send(renderFullPage(html, css));
-  });
+      // Send the rendered page back to the client.
+      res.send(renderFullPage(html, css));
+    })
+    .catch(err => {
+      next(err); // Pass errors to Express.
+    });
 }
 function renderFullPage(html, css) {
   return `
@@ -129,12 +128,14 @@ app.get("/", function(req, res, next) {
 
 app.use("/static", express.static("public"));
 
-app.get("/api/products", (req, res) => {
-  
-  getAllProductsWithAsset().then(products => {
-    // Send the rendered page back to the client.
-    res.status(200).json(products);
-  });
+app.get("/api/products", (req, res, next) => {
+  getAllProductsWithAsset()
+    .then(products => {
+      res.status(200).json(products);
+    })
+    .catch(err => {
+      next(err); // Pass errors to Express.
+    });
 });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
