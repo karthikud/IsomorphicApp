@@ -9,9 +9,6 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
-
-import axios from "axios";
-
 const styles = theme => ({
   root: {
     flexGrow: 1
@@ -20,9 +17,7 @@ const styles = theme => ({
     height: 300
   }
 });
-const PRODUCTS_ENDPOINT =
-  "https://dev-api.danielwellington.com/frontend/products";
-const ASSETS_ENDPOINT = "https://dev-api.danielwellington.com/frontend/assets";
+
 class ProductGridList extends Component {
   constructor(props) {
     super(props);
@@ -33,76 +28,12 @@ class ProductGridList extends Component {
       error: null,
       currentProduct: null
     };
-    this.getAllProductsWithAsset().then(products => {
-      console.log(products);
-      this.setState({
-        productsData: products,
-        isLoading: false
-      });
-    });
+
+
   }
 
-  setError = e => {
-    this.setState({
-      error: e
-    });
-  };
 
-  getAllProducts = async () => {
-    try {
-      let productList = await axios.get(PRODUCTS_ENDPOINT);
-      let products = await Promise.all(
-        productList.data.data.map(async product => {
-          let productResponse = await axios.get(
-            PRODUCTS_ENDPOINT + "/" + product.id
-          );
-          return productResponse.data.data;
-        })
-      );
-      return products;
-    } catch (e) {
-      return this.setError(e);
-    }
-  };
 
-  getProductAssetData = async assetId => {
-    try {
-      let assetResponse = await axios.get(ASSETS_ENDPOINT + "/" + assetId);
-      return assetResponse.data.data.uri;
-    } catch (e) {
-      return this.setError(e);
-    }
-  };
-
-  getAllProductsWithAsset = async () => {
-    try {
-      let productsResponse = await this.getAllProducts();
-
-      return Promise.all(
-        productsResponse.map(async product => {
-          let productInstance = {};
-          product.elements.map(async element => {
-            productInstance[element.name] = element.value;
-            productInstance["image_uri"] =
-              element.name === "main_image" ? element.value.id : "NULL";
-          });
-          productInstance["image_uri"] = await this.getProductAssetData(
-            productInstance["image_uri"]
-          );
-          const currencyFormat = new Intl.NumberFormat("en", {
-            style: "currency",
-            currency: productInstance["price"].unitAbbreviation
-          });
-          productInstance["price"] = currencyFormat.format(
-            productInstance["price"].value
-          );
-          return productInstance;
-        })
-      );
-    } catch (e) {
-      return this.setError(e);
-    }
-  };
 
   closeModalHandler = () => {
     this.setState({
@@ -116,19 +47,10 @@ class ProductGridList extends Component {
     });
   };
 
-  componentDidMount() {
-    this.setState({ isLoading: true });
-    this.getAllProductsWithAsset().then(products => {
-      console.log(products);
-      this.setState({
-        productsData: products,
-        isLoading: false
-      });
-    });
-  }
 
   render() {
-    const { productsData, isLoading, error } = this.state;
+    const { isLoading, error } = this.state;
+    const { productsData } = this.props;
 
     if (error) {
       return <p>{error.message}</p>;

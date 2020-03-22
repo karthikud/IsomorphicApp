@@ -1,12 +1,12 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { Component }  from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     flexGrow: 1,
   },
@@ -16,25 +16,30 @@ const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1,
   },
-}));
+});
 
-export default function ButtonAppBar() {
-  const classes = useStyles();
+class ButtonAppBar extends Component {
 
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            DW
-          </Typography>
-          <ShoppingCartOutlinedIcon />
 
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+  render() {
+    const { classes } = this.props;
+    return (
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              DW
+            </Typography>
+            <ShoppingCartOutlinedIcon />
+
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
 }
+
+}
+export default withStyles(styles)(ButtonAppBar);
